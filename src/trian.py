@@ -70,3 +70,24 @@ def make_model():
             random_state=42, class_weight="balanced"
         )),
     ])
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+baseline = make_model()
+baseline_f1 = cross_val_score(
+    baseline, X_train, y_train, cv=cv, scoring="f1"
+)
+print("Baseline cross-validation F1:", baseline_f1)
+print("Baseline mean CV F1:", round(baseline_f1.mean(), 3))
+ 
+search = GridSearchCV(
+    estimator=make_model(),
+    param_grid={
+        "classifier__n_estimators": [100, 200],
+        "classifier__max_depth": [None, 5, 10],
+        "classifier__min_samples_leaf": [1, 3],
+    },
+    scoring="f1", cv=cv, n_jobs=-1, refit=True,
+)
+search.fit(X_train, y_train)
+print("Best settings:", search.best_params_)
+print("Best mean CV F1:", round(search.best_score_, 3))
