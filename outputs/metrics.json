@@ -1,0 +1,25 @@
+{
+  "accuracy": 0.8461538461538461,
+  "precision": 0.5,
+  "recall": 0.4,
+  "f1": 0.4444444444444444,
+  "confusion_matrix": [
+    [
+      102,
+      8
+    ],
+    [
+      12,
+      8
+    ]
+  ],
+  "best_parameters": {
+    "classifier__max_depth": 5,
+    "classifier__min_samples_leaf": 1,
+    "classifier__n_estimators": 200
+  },
+  "baseline_mean_cv_f1": 0.41915340036307774,
+  "best_mean_cv_f1": 0.5232797363427544,
+  "train_rows": 519,
+  "test_rows": 130
+}
