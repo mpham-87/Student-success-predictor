@@ -91,3 +91,22 @@ search = GridSearchCV(
 search.fit(X_train, y_train)
 print("Best settings:", search.best_params_)
 print("Best mean CV F1:", round(search.best_score_, 3))
+
+# Touch the held-out test set only after model selection is finished.
+predictions = search.best_estimator_.predict(X_test)
+metrics = {
+    "accuracy": float(accuracy_score(y_test, predictions)),
+    "precision": float(precision_score(y_test, predictions, zero_division=0)),
+    "recall": float(recall_score(y_test, predictions, zero_division=0)),
+    "f1": float(f1_score(y_test, predictions, zero_division=0)),
+    "confusion_matrix": confusion_matrix(y_test, predictions).tolist(),
+    "best_parameters": search.best_params_,
+    "baseline_mean_cv_f1": float(baseline_f1.mean()),
+    "best_mean_cv_f1": float(search.best_score_),
+    "train_rows": int(len(X_train)),
+    "test_rows": int(len(X_test)),
+}
+print("Held-out test metrics:", json.dumps(metrics, indent=2))
+(OUT / "metrics.json").write_text(json.dumps(metrics, indent=2))
+joblib.dump(search.best_estimator_, OUT / "student_support_model.joblib")
+print("Saved preprocessed CSVs, metrics and fitted model in outputs/")
