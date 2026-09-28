@@ -61,3 +61,12 @@ for name, array, labels in [
     cleaned = pd.DataFrame(array, columns=column_names)
     cleaned["needs_support"] = labels.to_numpy()
     cleaned.to_csv(OUT / f"preprocessed_{name}.csv", index=False)
+
+# The model pipeline re-learns preprocessing within each CV training fold.
+def make_model():
+    return Pipeline([
+        ("preprocess", preprocess),
+        ("classifier", RandomForestClassifier(
+            random_state=42, class_weight="balanced"
+        )),
+    ])
